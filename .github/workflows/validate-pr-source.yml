@@ -1,0 +1,26 @@
+name: Validate PR Source
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  validate-source:
+    name: Validate PR Source Branch
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Require develop as source
+        env:
+          SOURCE_BRANCH: ${{ github.head_ref }}
+        run: |
+          if [ "$SOURCE_BRANCH" != "develop" ]; then
+            echo "::error::Only develop may merge into master."
+            exit 1
+          fi
+
+          echo "Valid source branch: develop"
