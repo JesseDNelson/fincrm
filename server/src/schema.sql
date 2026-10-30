@@ -48,3 +48,14 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 
     FOREIGN KEY (actor_user_id) REFERENCES users(id)
 );
+
+
+-- Store authenticated sessions server-side. Sessions can be revoked without changing a user's password.
+
+CREATE TABLE IF NOT EXISTS sessions (
+    id TEXT PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    expires_at TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
