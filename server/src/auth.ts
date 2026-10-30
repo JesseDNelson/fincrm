@@ -1,7 +1,9 @@
+
 import { Router } from "express";
 import { randomBytes, createHash } from "node:crypto";
 import { db } from "./db.js";
 import { verifyPassword } from "./password.js";
+import { writeAuditLog } from "./audit.js";
 import { authenticate } from "./middleware/authenticate.js";
 
 export const authRouter = Router();
@@ -35,13 +37,24 @@ authRouter.post("/login", async (req, res) => {
     is_active: number;
   } | undefined;
 
-  // Use a generic error so we don't reveal whether
-  // a particular username exists.
+  // Return the same error for unknown users, inactive users,
+  // and incorrect passwords to prevent username enumeration.
   if (
     !user ||
     !user.is_active ||
     !(await verifyPassword(password, user.password_hash))
   ) {
+    // Record the failed authentication attempt.
+    // Never store passwords or session tokens in audit logs.
+    writeAuditLog({
+      actorUserId: user?.id ?? null,
+      action: "auth.login.failed",
+      entityType: "user",
+      entityId: user?.id ?? null,
+      outcome: "failure",
+      details: "Authentication failed: invalid credentials"
+    });
+
     res.status(401).json({
       error: "Invalid credentials"
     });
