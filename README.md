@@ -2,7 +2,7 @@
 
 A security-focused CRM demonstration for a fictional U.S. financial institution. FinCRM combines customer management with authentication, role-based authorization, audit trails, and transaction-integrity controls. It was built as a software engineering and IT audit exercise, not as a production banking system. Use synthetic customer information only.
 
-**Live demo:** Deployment pending — the HTTPS URL will be added after deployment.
+**Live demo:** https://fincrm-jmr2.onrender.com/
 
 **Audit approach:** [One-page Approach & Audit Plan](docs/IT_AUDIT_PLAN.md)
 
